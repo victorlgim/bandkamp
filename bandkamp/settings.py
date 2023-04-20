@@ -3,12 +3,13 @@ from datetime import timedelta
 import dotenv
 import os
 import dj_database_url
+from django.core.management.utils import get_random_secret_key
 
 dotenv.load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 DEBUG = True
 
