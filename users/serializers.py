@@ -8,8 +8,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_superuser')
         extra_kwargs = {
-            'username': {'validators': [UniqueValidator(queryset=User.objects.all())]},
-            'email': {'validators': [UniqueValidator(queryset=User.objects.all())]},
+            'username': {
+                'validators': [UniqueValidator(queryset=User.objects.all(), 
+                                               message='A user with that username already exists.')]
+            },
+            'email': {
+                'validators': [UniqueValidator(queryset=User.objects.all())]
+            },
             'password': {'write_only': True},
             'is_superuser': {'read_only': True},
         }
@@ -17,10 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_superuser(**validated_data)
 
-    def update(self, instance, validated_data):
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
-
+    def update(self, instance: User, validated_data: dict) -> User:
+        instance.__dict__.update(**validated_data)
+        instance.set_password(instance.password)
         instance.save()
-
         return instance
