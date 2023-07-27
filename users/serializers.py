@@ -6,12 +6,8 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'is_superuser')
+        fields = ('id', 'email', 'password', 'first_name', 'last_name', 'is_superuser')
         extra_kwargs = {
-            'username': {
-                'validators': [UniqueValidator(queryset=User.objects.all(), 
-                                               message='A user with that username already exists.')]
-            },
             'email': {
                 'validators': [UniqueValidator(queryset=User.objects.all())]
             },
